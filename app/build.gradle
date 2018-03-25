@@ -1,0 +1,63 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion configs.compileSdkVersion
+    defaultConfig {
+        applicationId "com.tory.dmzj"
+        minSdkVersion configs.miniSdkVersion
+        targetSdkVersion configs.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    implementation libraries.appcompat
+    implementation libraries.design
+
+    implementation libraries.glide
+    implementation libraries.rxjava
+    implementation libraries.rxandroid
+    implementation libraries.adapterRxjava
+
+    implementation libraries.okhttp3
+    implementation libraries.retrofit
+    implementation libraries.gson
+    implementation libraries.converterGson
+
+    implementation libraries.slidr
+
+    implementation libraries.eventbus
+    kapt           libraries.eventbusCompiler
+
+    implementation libraries.butterknife
+    kapt           libraries.butterknifeCompiler
+
+    testImplementation 'junit:junit:4.12'
+    //androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    //androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+}
+
+kapt {
+    arguments {
+        arg('eventBusIndex', 'com.tory.dmzj.event.MyEventBusIndex')
+    }
+}

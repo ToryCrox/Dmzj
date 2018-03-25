@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingBottom="8dp"
+    android:paddingEnd="16dp"
+    android:paddingStart="16dp"
+    android:paddingTop="8dp">
+
+    <ImageView
+        android:id="@+id/iv_cover"
+        android:layout_width="90dp"
+        android:layout_height="115dp" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingEnd="4dp"
+        android:paddingStart="16dp"
+        android:paddingTop="8dp">
+
+        <TextView
+            android:id="@+id/tv_title"
+            style="@style/TextStyle.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="打工吧 魔王大人" />
+
+        <TextView
+            android:id="@+id/tv_authors"
+            style="@style/TextStyle.Summary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:drawableStart="@drawable/ic_person_outline_black_16dp"
+            android:drawableTint="?android:attr/textColorSecondary" />
+
+        <TextView
+            android:id="@+id/tv_types"
+            style="@style/TextStyle.Summary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:drawableStart="@drawable/ic_bookmark_border_black_16dp"
+            android:drawableTint="?android:attr/textColorSecondary"
+            tools:text="欢乐向" />
+
+        <TextView
+            android:id="@+id/tv_updatetime"
+            style="@style/TextStyle.Summary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:drawableStart="@drawable/ic_access_time_black_16dp"
+            android:drawableTint="?android:attr/textColorSecondary" />
+
+
+    </LinearLayout>
+</LinearLayout>

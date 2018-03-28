@@ -1,15 +1,14 @@
 package com.tory.dmzj.networks.apis
 
 
-import com.tory.dmzj.bean.CartoonRecommendModel
 import com.tory.dmzj.bean.CartoonCategoryModel
+import com.tory.dmzj.bean.CartoonRecommendModel
 import com.tory.dmzj.bean.LatestComicInfo
 import com.tory.dmzj.bean.SubscribeModel
-
+import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
-import rx.Observable
 
 /**
  * @Author: tory

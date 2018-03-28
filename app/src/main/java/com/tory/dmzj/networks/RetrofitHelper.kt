@@ -8,7 +8,7 @@ import com.tory.dmzj.networks.apis.UserService
 
 
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitHelper {
@@ -33,7 +33,7 @@ object RetrofitHelper {
         val retrofit = Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .client(OkHttpManager.instance.mOkHttpClient)
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
         return retrofit.create(clazz)

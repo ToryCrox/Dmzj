@@ -1,6 +1,5 @@
 package com.tory.dmzj.ext
 
-import android.app.Activity
 import android.content.Context
 import android.support.annotation.ColorInt
 import android.support.annotation.ColorRes
@@ -18,5 +17,3 @@ fun Context.toast(message: CharSequence, duration: Int = Toast.LENGTH_SHORT) {
 @ColorInt
 fun Context.getCompatColor(@ColorRes id : Int) = ContextCompat.getColor(this, id)
 
-@ColorInt
-fun Activity.getColor(@ColorRes id : Int) = ContextCompat.getColor(this, id)

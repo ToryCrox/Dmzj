@@ -1,48 +1,46 @@
 package com.tory.dmzj.ui.comic
 
+import butterknife.BindView
 import com.tory.dmzj.R
-import com.tory.dmzj.bean.CartoonRecommendModel
 import com.tory.dmzj.networks.RetrofitHelper
 import com.tory.dmzj.ui.base.BasePageFragment
 import com.tory.dmzj.utils.L
 import com.tory.dmzj.widget.banner.BannerEntity
-import kotlinx.android.synthetic.main.fragment_comic_recommend.*
-import rx.Subscriber
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
+import com.tory.dmzj.widget.banner.BannerView
+import com.trello.rxlifecycle2.android.FragmentEvent
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+
 
 /**
  * @Author: tory
  * Create: 2017/9/2
  */
 class ComicRecommendFragment : BasePageFragment() {
+
+    @BindView(R.id.bannerView)
+    lateinit var bannerView: BannerView
+
     override fun bindLayout(): Int = R.layout.fragment_comic_recommend
 
     override fun fetchData() {
+
         RetrofitHelper.comicService.getCartoonRecommend()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Subscriber<List<CartoonRecommendModel>>() {
-                    override fun onCompleted() {
-
+                .compose(bindUntilEvent(FragmentEvent.DESTROY))
+                .subscribe({ cartoonRecommendModels ->
+                    L.d("onNext cartoonRecommendModels=" + cartoonRecommendModels)
+                    var cartoonRecommendModel = cartoonRecommendModels.first()
+                    var data = cartoonRecommendModel.data
+                    var bannerEntices = mutableListOf<BannerEntity>()
+                    data?.forEach {
+                        var bannerEntity = BannerEntity(it.url, it.title, it.cover)
+                        bannerEntices.add(bannerEntity)
                     }
+                    bannerView.build(bannerEntices)
+                }, { e -> L.e(TAG, "fetchData error"+e)})
 
-                    override fun onError(e: Throwable) {
-                        L.e(TAG, "fetchData error", e)
-                    }
-
-                    override fun onNext(cartoonRecommendModels: List<CartoonRecommendModel>) {
-                        L.d("onNext cartoonRecommendModels=" + cartoonRecommendModels)
-                        var cartoonRecommendModel = cartoonRecommendModels.first()
-                        var data = cartoonRecommendModel.data
-                        var bannerEntices = mutableListOf<BannerEntity>()
-                        data?.forEach {
-                            var bannerEntity = BannerEntity(it.url, it.title,it.cover)
-                            bannerEntices.add(bannerEntity)
-                        }
-                        bannerView.build(bannerEntices)
-                    }
-                })
     }
 
     companion object {

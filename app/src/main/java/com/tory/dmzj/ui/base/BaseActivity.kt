@@ -6,17 +6,16 @@ import android.support.design.widget.AppBarLayout
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.os.TraceCompat
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.View
-
 import com.tory.dmzj.R
 import com.tory.dmzj.utils.L
 import com.tory.dmzj.utils.StatusBarHelper
 import com.tory.dmzj.utils.Utilities
+import com.trello.rxlifecycle2.components.support.RxAppCompatActivity
 
 
-abstract class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity : RxAppCompatActivity() {
 
     protected val TAG = this.javaClass.simpleName
 

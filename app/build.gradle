@@ -37,6 +37,7 @@ dependencies {
     implementation libraries.rxjava
     implementation libraries.rxandroid
     implementation libraries.adapterRxjava
+    implementation libraries.rxlifecycleComponents
 
     implementation libraries.okhttp3
     implementation libraries.retrofit

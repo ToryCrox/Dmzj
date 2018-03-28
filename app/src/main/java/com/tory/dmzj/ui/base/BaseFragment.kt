@@ -3,19 +3,19 @@ package com.tory.dmzj.ui.base
 import android.os.Bundle
 import android.support.annotation.CallSuper
 import android.support.annotation.LayoutRes
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import butterknife.ButterKnife
 import com.tory.dmzj.utils.L
+import com.trello.rxlifecycle2.components.support.RxFragment
 
 /**
  * @Author: Tory
  * Create: 2016/9/11
  * Update: 2016/9/11
  */
-open abstract class BaseFragment : Fragment() {
+open abstract class BaseFragment : RxFragment() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -4,18 +4,15 @@ import android.content.Context
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import com.bumptech.glide.Glide
-
 import com.tory.dmzj.R
-
 import com.tory.dmzj.bean.CartoonCategoryModel
 import com.tory.dmzj.networks.RetrofitHelper
 import com.tory.dmzj.recycler.BaseRecyclerAdapter
 import com.tory.dmzj.recycler.BaseViewHolder
 import com.tory.dmzj.ui.base.BaseRecyclerPageFragment
 import com.tory.dmzj.utils.L
-import rx.Subscriber
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 class CartoonCategoryFragment : BaseRecyclerPageFragment<CartoonCategoryFragment.CategoryAdapter>() {
 
@@ -43,19 +40,12 @@ class CartoonCategoryFragment : BaseRecyclerPageFragment<CartoonCategoryFragment
         RetrofitHelper.comicService.getCartoonCategory()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Subscriber<List<CartoonCategoryModel>>() {
-                    override fun onCompleted() {
-                        mSwipeRefresh.isRefreshing = false
-                    }
-
-                    override fun onError(e: Throwable) {
-                        L.e(TAG, "fetchData error", e)
-                    }
-
-                    override fun onNext(cartoonCategoryModels: List<CartoonCategoryModel>) {
-                        L.d("onNext infos=" + cartoonCategoryModels)
-                        refreshData(cartoonCategoryModels)
-                    }
+                .compose(bindToLifecycle())
+                .subscribe({cartoonCategoryModels ->
+                    L.d("onNext infos=" + cartoonCategoryModels)
+                    refreshData(cartoonCategoryModels)
+                },{e ->L.e(TAG, "fetchData error", e) },{
+                    mSwipeRefresh.isRefreshing = false
                 })
     }
 

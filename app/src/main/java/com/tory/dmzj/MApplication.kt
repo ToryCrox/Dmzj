@@ -16,10 +16,6 @@ class MApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
-        //chrome://inspect
-        //Stetho.initializeWithDefaults(this);
-        //ReflectDebugUtil.reflectInitStetho(this);
-        //Utilities.setNightMode(this, SettingHelper.getInstance(this).isNightMode());
         EventBus.builder().addIndex(MyEventBusIndex()).installDefaultEventBus()
         L.d("StethoReflection sourceDir=" + applicationInfo.sourceDir)
     }

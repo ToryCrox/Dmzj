@@ -10,11 +10,11 @@ import com.tory.dmzj.recycler.BaseRecyclerAdapter
 import com.tory.dmzj.recycler.BaseViewHolder
 import com.tory.dmzj.ui.base.BaseRecyclerPageFragment
 import com.tory.dmzj.utils.L
-import rx.Subscriber
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class ComicUpdateFragment : BaseRecyclerPageFragment<ComicUpdateFragment.LatestComicAdapter>() {
 
@@ -26,23 +26,17 @@ class ComicUpdateFragment : BaseRecyclerPageFragment<ComicUpdateFragment.LatestC
     }
 
     override fun fetchData() {
-        RetrofitHelper.comicService.getLatestComics(100, mPageIndex - 1)
+        val subscribe: Any = RetrofitHelper.comicService.getLatestComics(100, mPageIndex - 1)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Subscriber<List<LatestComicInfo>>() {
-                    override fun onCompleted() {
-                        mSwipeRefresh.isRefreshing = false
-                    }
-
-                    override fun onError(e: Throwable) {
-                        L.e(TAG, "fetchData error", e)
-                    }
-
-                    override fun onNext(latestComicInfos: List<LatestComicInfo>) {
-                        L.d("onNext infos=" + latestComicInfos)
-                        refreshData(latestComicInfos)
-                    }
+                .compose(bindToLifecycle())
+                .subscribe({latestComicInfos ->
+                    L.d("onNext infos=" + latestComicInfos)
+                    refreshData(latestComicInfos)
+                }, { e -> L.e(TAG, "fetchData error", e)},{
+                    mSwipeRefresh.isRefreshing = false
                 })
+
     }
 
     private fun refreshData(latestComicInfos: List<LatestComicInfo>) {

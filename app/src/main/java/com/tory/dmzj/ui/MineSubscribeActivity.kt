@@ -2,14 +2,13 @@ package com.tory.dmzj.ui
 
 import android.os.Bundle
 import com.tory.dmzj.R
-import com.tory.dmzj.bean.SubscribeModel
 import com.tory.dmzj.helper.SpHelper
 import com.tory.dmzj.networks.RetrofitHelper
 import com.tory.dmzj.ui.base.BaseSliderActivity
 import com.tory.dmzj.utils.L
-import rx.Subscriber
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+
 
 /**
  * Created by tory on 2018/1/14.
@@ -64,20 +63,7 @@ class MineSubscribeActivity : BaseSliderActivity(){
                 0, uid)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Subscriber<List<SubscribeModel>>() {
-                    override fun onCompleted() {
-
-                    }
-
-                    override fun onError(e: Throwable) {
-                        L.e(TAG, "fetchData error", e)
-                    }
-
-                    override fun onNext(models: List<SubscribeModel>) {
-                        L.d("onNext infos=" + models)
-
-                    }
-                })
+                .subscribe({models -> L.d("onNext infos=" + models)})
     }
 
 }

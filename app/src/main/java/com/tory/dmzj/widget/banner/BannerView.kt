@@ -1,6 +1,6 @@
 package com.tory.dmzj.widget.banner
 
-import android.app.Activity
+
 import android.content.Context
 import android.support.v4.view.ViewPager
 import android.util.AttributeSet
@@ -9,26 +9,24 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
-
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tory.dmzj.R
 import com.tory.dmzj.utils.DensityUtils
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.layout_custom_banner.view.*
-
-import java.util.ArrayList
+import java.util.*
 import java.util.concurrent.TimeUnit
 
-import rx.Observable
-import rx.Subscription
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
-import rx.subscriptions.CompositeSubscription
+
 
 class BannerView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : RelativeLayout(context, attrs, defStyleAttr), BannerAdapter.ViewPagerOnItemClickListener {
     internal var viewPager: ViewPager
     internal var points: LinearLayout
-    private var compositeSubscription: CompositeSubscription? = null
+    private var mDisposable: Disposable? = null
     //默认轮播时间，10s
     private var delayTime = 5
     private val imageViewList: MutableList<ImageView>
@@ -79,7 +77,7 @@ class BannerView @JvmOverloads constructor(context: Context, attrs: AttributeSet
      */
     fun build(list: List<BannerEntity>) {
         destroy()
-        if (list.size == 0) {
+        if (list.isEmpty()) {
             this.visibility = View.GONE
             return
         }
@@ -139,7 +137,7 @@ class BannerView @JvmOverloads constructor(context: Context, attrs: AttributeSet
                     }
                     ViewPager.SCROLL_STATE_DRAGGING -> {
                         stopScroll()
-                        compositeSubscription!!.unsubscribe()
+                        mDisposable?.dispose()
                     }
                 }
             }
@@ -157,9 +155,8 @@ class BannerView @JvmOverloads constructor(context: Context, attrs: AttributeSet
      * 图片开始轮播
      */
     private fun startScroll() {
-        compositeSubscription = CompositeSubscription()
         isStopScroll = false
-        val subscription = Observable.timer(delayTime.toLong(), TimeUnit.SECONDS)
+        val disposable = Observable.timer(delayTime.toLong(), TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
@@ -169,7 +166,7 @@ class BannerView @JvmOverloads constructor(context: Context, attrs: AttributeSet
                     isStopScroll = true
                     viewPager.currentItem = viewPager.currentItem + 1
                 }
-        compositeSubscription!!.add(subscription)
+        mDisposable = disposable
     }
 
 
@@ -182,9 +179,7 @@ class BannerView @JvmOverloads constructor(context: Context, attrs: AttributeSet
 
 
     fun destroy() {
-        if (compositeSubscription != null) {
-            compositeSubscription!!.unsubscribe()
-        }
+        mDisposable?.dispose()
     }
 
     /**

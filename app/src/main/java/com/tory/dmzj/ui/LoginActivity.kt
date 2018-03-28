@@ -20,18 +20,16 @@ import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import com.tory.dmzj.R
-import com.tory.dmzj.bean.UserModel
 import com.tory.dmzj.event.LoginSuccessEvent
 import com.tory.dmzj.ext.toast
 import com.tory.dmzj.helper.SpHelper
 import com.tory.dmzj.networks.RetrofitHelper
 import com.tory.dmzj.ui.base.BaseSliderActivity
 import com.tory.dmzj.utils.L
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_login.*
 import org.greenrobot.eventbus.EventBus
-import rx.Subscriber
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import java.util.*
 
 /**
@@ -150,25 +148,18 @@ class LoginActivity : BaseSliderActivity(), LoaderCallbacks<Cursor> {
         RetrofitHelper.userService.login(emailStr, passwordStr)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Subscriber<UserModel>(){
-                    override fun onError(e: Throwable) {
-                        L.e("login", e)
+                .compose(bindToLifecycle())
+                .subscribe({userModel ->
+                    L.d("login onNext"+userModel)
+                    if(userModel != null){
+                        toast("登陆成功！ ${userModel.data?.nickname}")
+                        SpHelper.setUser(userModel)
+                        EventBus.getDefault().post(LoginSuccessEvent())
+                        finish()
                     }
-
-                    override fun onNext(userModel: UserModel?) {
-                        L.d("login onNext"+userModel)
-                        if(userModel != null){
-                            toast("登陆成功！ ${userModel.data?.nickname}")
-                            SpHelper.setUser(userModel)
-                            EventBus.getDefault().post(LoginSuccessEvent())
-                            finish()
-                        }
-                    }
-
-                    override fun onCompleted() {
-                        L.d("login onCompleted")
-                        showProgress(false)
-                    }
+                },{e->L.e("login", e)},{
+                    L.d("login onCompleted")
+                    showProgress(false)
                 })
     }
 
